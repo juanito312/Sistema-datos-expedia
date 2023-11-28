@@ -1,0 +1,233 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--C3.js-->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css">
+    <!--Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!--Custom Css-->
+    <link rel="stylesheet" href="{% static 'css/principal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mineria.css' %}">
+    <title>Dashboar Mineria de Datos</title>
+</head>
+
+<body>
+    <!--Menu-->
+    <header>
+        <nav>
+            <ul class="menu-lista">
+                <span class="nombre-usuario"> Usuario <span class="nombre-usuario" id="nombre"></span></span>
+                <li class="menu-opciones"><a href="{% url 'principal' %}">Inicio</a></li>
+                <li class="menu-opciones"><a href="{% url 'subir_csv' %}">Subir Csv</a></li>
+                <li class="menu-opciones"><a href="{% url 'registros_expedia' %}">Registros</a></li>
+                <li class="menu-opciones"><a href="{% url 'mineria' %}">Mineria de Datos</a></li>
+                <li class="menu-opciones"><a href="{% url 'estadistica' %}">Calculos Estadisticos</a></li>
+                <li class="menu-opciones"><a href="{% url 'index' %}">Cerrar Sesion</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <article>
+        <div class="cont-title">
+            <h1 class="titulo">Mineria de Datos</h1>
+        </div>
+    </article>
+
+    <main>
+        <div class="content">
+            <div class="conten-menu">
+                <a href="{% url 'modelo_1' %}" class="modelos">Modelo 1</a>
+                <a href="{% url 'modelo_2' %}" class="modelos">Modelo 2</a>
+                <a href="{% url 'modelo_3' %}" class="modelos">Modelo 3</a>
+                <a href="{% url 'modelo_4' %}" class="modelos">Modelo 4</a>
+                <a href="{% url 'modelo_5' %}" class="modelos">Modelo 5</a>
+            </div>
+        </div>
+
+        <!-- Modelo 1 -->
+        <div class="cont-modelo1">
+            <div id="modelo1" class="cont-modelos"></div>
+            <script>
+                // Recuperar los datos del contexto y parsearlos
+                var datosOriginales = JSON.parse('{{ datos_originales|safe }}');
+                var datosPredichos = JSON.parse('{{ datos_predichos|safe }}');
+
+                // Configurar los datos para C3.js
+                var chart = c3.generate({
+                    bindto: '#modelo1',
+                    data: {
+                        xs: { 'Valores Reales': 'x', 'Valores Predichos': 'x' },
+                        columns: [
+                            ['x'].concat(datosOriginales.x),
+                            ['Valores Reales'].concat(datosOriginales.y),
+                            ['Valores Predichos'].concat(datosPredichos.y)
+                        ],
+                        type: 'area'
+                    },
+                    axis: {
+                        x: { label: 'visitor_hist_adr_usd', tick: { fit: false } },
+                        y: { label: 'visitor_hist_starrating' }
+                    },
+                    title: {
+                        text: 'Comparacion de valores Reales y Predichos'
+                    }
+                });
+            </script>
+        </div>
+
+        <!-- Modelo 2 -->
+        <div class="cont-modelo2">
+            <div id="modelo2" class="cont-modelos">
+                <script>
+                    // Recuperar los datos del contexto y parsearlos
+                    var datosOriginales2 = JSON.parse('{{ datos_originales2|safe }}');
+                    var datosPredichos2 = JSON.parse('{{ datos_predichos2|safe }}');
+
+                    // Configurar los datos para C3.js
+                    var chart = c3.generate({
+                        bindto: '#modelo2',
+                        data: {
+                            xs: { 'Valores Reales Bar': 'x', 'Valores Predichos Area': 'x' },
+                            columns: [
+                                ['x'].concat(datosOriginales2.x),
+                                ['Valores Reales Bar'].concat(datosOriginales2.y),
+                                ['Valores Predichos Area'].concat(datosPredichos2.y)
+                            ],
+                            types: {
+                                'Valores Reales Bar': 'bar',
+                                'Valores Predichos Area': 'area',
+                            }
+                        },
+                        axis: {
+                            x: { label: 'srch_adults_count', tick: { fit: false } },
+                            y: { label: 'srch_room_count' }
+                        },
+                        title: {
+                            text: 'Modelo Numero de Adultos en la Habitacion y Numero de Habitaciones del Hotel'
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <!-- Modelo 3 -->
+        <div class="cont-modelo3">
+            <div id="modelo3" class="cont-modelos">
+                <script>
+                    // Recuperar los datos del contexto y parsearlos
+                    var datosOriginales3 = JSON.parse('{{ datos_originales3|safe }}');
+                    var datosPredichos3 = JSON.parse('{{ datos_predichos3|safe }}');
+
+                    // Configurar los datos para C3.js
+                    var chart = c3.generate({
+                        bindto: '#modelo3',
+                        data: {
+                            xs: { 'Valores Reales Line': 'x', 'Valores Predichos Line': 'x', 'Valores Reales Bar': 'x', 'Valores Predichos Bar': 'x' },
+                            columns: [
+                                ['x'].concat(datosOriginales3.x),
+                                ['Valores Reales Bar'].concat(datosOriginales3.y),
+                                ['Valores Predichos Line'].concat(datosPredichos3.y)
+                            ],
+                            types: {
+                                'Valores Reales Bar': 'bar',
+                                'Valores Predichos Line': 'line',
+                            }
+                        },
+                        axis: {
+                            x: { label: 'visitor_location_country_id', tick: { fit: false } },
+                            y: { label: 'prop_country_id' }
+                        },
+                        title: {
+                            text: 'Modelo del ID donde se encuentra el Cliente y ID donde se encuentra el Hotel'
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <!-- Modelo 4 -->
+        <div class="cont-modelo4">
+            <div id="modelo4" class="cont-modelos">
+                <script>
+                    // Recuperar los datos del contexto y parsearlos
+                    var datosOriginales4 = JSON.parse('{{ datos_originales4|safe }}');
+                    var datosPredichos4 = JSON.parse('{{ datos_predichos4|safe }}');
+
+                    // Configurar los datos para C3.js
+                    var chart = c3.generate({
+                        bindto: '#modelo4',
+                        data: {
+                            xs: { 'Valores Reales Scatter': 'x', 'Valores Predichos Line': 'x' },
+                            columns: [
+                                ['x'].concat(datosOriginales4.x),
+                                ['Valores Reales Scatter'].concat(datosOriginales4.y),
+                                ['Valores Predichos Line'].concat(datosPredichos4.y)
+                            ],
+                            types: {
+                                'Valores Reales Scatter': 'scatter',
+                                'Valores Predichos Line': 'line',
+                            }
+                        },
+                        axis: {
+                            x: { label: 'prop_location_score2', tick: { fit: false } },
+                            y: { label: 'prop_location_score1' }
+                        },
+                        title: {
+                            text: 'Modelo de conveniencia de Hotel'
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <!-- Modelo 5 -->
+        <div class="cont-modelo5">
+            <div id="modelo5" class="cont-modelos">
+                <script>
+                    // Recuperar los datos del contexto y parsearlos
+                    var datosOriginales5 = JSON.parse('{{ datos_originales5|safe }}');
+                    var datosPredichos5 = JSON.parse('{{ datos_predichos5|safe }}');
+
+                    // Configurar los datos para C3.js
+                    var chart = c3.generate({
+                        bindto: '#modelo5',
+                        data: {
+                            xs: { 'Valores Reales Area': 'x', 'Valores Predichos Line': 'x' },
+                            columns: [
+                                ['x'].concat(datosOriginales5.x),
+                                ['Valores Reales Area'].concat(datosOriginales5.y),
+                                ['Valores Predichos Line'].concat(datosPredichos5.y)
+                            ],
+                            types: {
+                                'Valores Reales Area': 'area',
+                                'Valores Predichos line': 'line',
+                            }
+                        },
+                        axis: {
+                            x: { label: 'srch_length_of_stay', tick: { fit: false } },
+                            y: { label: 'srch_booking_window' }
+                        },
+                        title: {
+                            text: 'Modelo Numero de noches que se buscaron con Numeros de dias a futuro que comenzo la Rerva '
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </main>
+
+</body>
+<!--Custom js-->
+<script src="{% static 'js/usuario.js' %}"></script>
+
+</html>

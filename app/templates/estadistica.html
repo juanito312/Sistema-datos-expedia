@@ -1,0 +1,393 @@
+<!--Cargar los archivos estaticos-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--C3.js-->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css">
+    <!--Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!--DataTable.js-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!--Custom Css-->
+    <link rel="stylesheet" href="{% static 'css/principal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estadistica.css' %}">
+
+
+    <title>Pagina de Inicio</title>
+</head>
+
+<body>
+    <!--Menu-->
+    <header>
+        <nav>
+            <ul class="menu-lista">
+                <span class="nombre-usuario"> Usuario <span class="nombre-usuario" id="nombre"></span></span>
+                <li class="menu-opciones"><a href="{% url 'principal' %}">Inicio</a></li>
+                <li class="menu-opciones"><a href="{% url 'subir_csv' %}">Subir Csv</a></li>
+                <li class="menu-opciones"><a href="{% url 'registros_expedia' %}">Registros</a></li>
+                <li class="menu-opciones"><a href="{% url 'mineria' %}">Mineria de Datos</a></li>
+                <li class="menu-opciones"><a href="{% url 'estadistica' %}">Calculos Estadisticos</a></li>
+                <li class="menu-opciones"><a href="">Cerrar Sesion</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <article>
+        <div class="cont-title">
+            <h1 class="titulo">Calculos Estadisticos</h1>
+        </div>
+    </article>
+
+    <main>
+        <div class="content">
+            <div class="conten-menu">
+                <a href="{% url 'grafica_1' %}" class="graficas">Grafica 1</a>
+                <a href="{% url 'grafica_2' %}" class="graficas">Grafica 2</a>
+                <a href="{% url 'grafica_3' %}" class="graficas">Grafica 3</a>
+                <a href="{% url 'grafica_4' %}" class="graficas">Grafica 4</a>
+                <a href="{% url 'grafica_5' %}" class="graficas">Grafica 5</a>
+                <a href="{% url 'grafica_6' %}" class="graficas">Grafica 6</a>
+                <a href="{% url 'grafica_7' %}" class="graficas">Grafica 7</a>
+                <a href="{% url 'grafica_8' %}" class="graficas">Grafica 8</a>
+            </div>
+        </div>
+
+        <!-- Grafica 1 -->
+        <div id="miGrafico1" class="cont-graficas"></div>
+        <script>
+            // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+            let datos = JSON.parse('{{ datos_expedia_json|safe }}');
+
+            // Crear un array para almacenar los meses y precios
+            let meses = datos.map(function (item) {
+                return item.month;
+            });
+            let precios = datos.map(function (item) {
+                return item.price_usd;
+            });
+
+            // Configuración e inicialización del gráfico con C3.js
+            var chart = c3.generate({
+                bindto: '#miGrafico1', // Selecciona el contenedor por su id
+                data: {
+                    x: 'Mes', // Define la variable x
+                    columns: [
+                        ['Mes'].concat(meses), // Agrega 'Mes' al inicio de la columna
+                        ['Precio (USD)'].concat(precios) // Agrega 'Precio (USD)' al inicio de la columna
+                    ],
+                    type: 'scatter'
+                },
+                axis: {
+                    x: {
+                        label: 'Mes'
+                    },
+                    y: {
+                        label: 'Precio (USD)'
+                    }
+                },
+                title: {
+                    text: 'Relacion entre precio de la habitacion y el mes'
+                }
+            });
+        </script>
+
+        <!-- Grafica 2 -->
+        <div id="miGrafico2" class="cont-graficas"></div>
+        <script>
+            let recuepar = JSON.parse('{{ datos_expedia_json2|safe }}')
+            // Recuperar los datos 
+            let datos2 = recuepar
+
+            // Crear un array para almacenar los el precio y la calificacion del hotel
+            let pr = datos2.map(function (item) {
+                return item.price_usd
+            })
+
+            let ps = datos2.map(function (item) {
+                return item.prop_starrating
+            })
+
+            // Configuracion e inicializacion del grafico
+            let char = c3.generate({
+                bindto: '#miGrafico2',
+                data: {
+                    y: 'Precio',
+                    columns: [
+                        ['Precio'].concat(pr),
+                        ['Calificacion'].concat(ps)
+                    ],
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        label: 'Precio (USD)'
+                    },
+
+                    y: {
+                        label: 'Calificacion de estrellas del Hotel'
+                    },
+                },
+                title: {
+                    text: 'Relacion entre el precio y la calificacion del Hotel'
+                }
+            })
+        </script>
+
+        <!-- Grafica 3 -->
+        <div id="miGrafico3" class="cont-graficas">
+            <script>
+                // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+                let datos3 = JSON.parse('{{ datos_expedia_json3| safe }}');
+
+                // Verificar si 'visitor_location_country_id' está definido y no es nulo
+                if (datos3 && datos3[0] && datos3[0]['visitor_location_country_id']) {
+                    // Obtener los valores y las etiquetas para el gráfico de barras
+                    let paisesOrigen = datos3.map(item => String(item['visitor_location_country_id']));
+                    let numBusquedas = datos3.length;  // Utilizar la longitud de los datos para representar el número de búsquedas
+
+                    // Configuración e inicialización del gráfico con C3.js
+                    var chart = c3.generate({
+                        bindto: '#miGrafico3',
+                        data: {
+                            y: 'País de Origen',
+                            columns: [
+                                ['País de Origen'].concat(paisesOrigen),
+                                ['Número de Búsquedas'].concat(numBusquedas)
+                            ],
+                            type: 'line'
+                        },
+                        axis: {
+                            x: {
+                                type: 'category',
+                                label: 'País de Origen'
+                            },
+                            y: {
+                                label: 'Número de Búsquedas'
+                            }
+                        },
+                        title: {
+                            text: 'Distribución de Países de Origen de los Clientes'
+                        }
+                    });
+                }
+            </script>
+        </div>
+
+        <!-- Grafica 4 -->
+        <div id="miGrafica4" class="cont-graficas">
+            <script>
+                // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+                let datos4 = JSON.parse('{{ datos_expedia_json4| safe }}');
+
+                // Verificar si 'prop_starrating' está definido y no es nulo
+                if (datos4 && datos4[0] && datos4[0]['prop_starrating']) {
+                    // Obtener los valores y las etiquetas para el gráfico de barras
+                    let clasifiEstrellas = datos4.map(item => String(item['prop_starrating']));
+                    let numHoteles = datos4.length;  // Utilizar la longitud de los datos para representar el número de búsquedas
+
+                    // Configuración e inicialización del gráfico con C3.js
+                    var chart = c3.generate({
+                        bindto: '#miGrafica4',
+                        data: {
+                            y: 'Calificacion de Estrellas',
+                            columns: [
+                                ['Clasificacion de Estrellas'].concat(clasifiEstrellas),
+                                ['Número de Hoteles'].concat(numHoteles)
+                            ],
+                            type: 'bar'
+                        },
+                        axis: {
+                            x: {
+                                type: 'category',
+                                label: 'Clasificacion de Estrellas'
+                            },
+                            y: {
+                                label: 'Numero de Hoteles'
+                            }
+                        },
+                        title: {
+                            text: 'Distribución de Hoteles segun la Clasificacion de Estrellas'
+                        }
+                    });
+                }
+            </script>
+        </div>
+
+        <!-- Grafica 5 -->
+        <div id="miGrafica5" class="cont-graficas">
+            <script>
+                // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+                let datos5 = JSON.parse('{{ datos_expedia_json5| safe }}');
+
+                // Verificar si 'prop_starrating' está definido y no es nulo
+                if (datos5 && datos5[0] && datos5[0]['prop_review_score']) {
+                    // Obtener los valores y las etiquetas para el gráfico de barras
+                    let puntuacionOpiniones = datos5.map(item => String(item['prop_review_score']));
+                    let numHoteles = datos5.length;  // Utilizar la longitud de los datos para representar el número de hoteles
+
+                    // Configuración e inicialización del gráfico con C3.js
+                    var chart = c3.generate({
+                        bindto: '#miGrafica5',
+                        data: {
+                            y: 'Puntuaciones de Opiniones',
+                            columns: [
+                                ['Puntuacion de Opiniones'].concat(puntuacionOpiniones),
+                                ['Numero de Hoteles'].concat(numHoteles)
+                            ],
+                            type: 'donut'
+                        },
+                        axis: {
+                            x: {
+                                type: 'category',
+                                label: 'Puntuaciones de Opiniones'
+                            },
+                            y: {
+                                label: 'Numero de Hoteles'
+                            }
+                        },
+                        title: {
+                            text: 'Distribucion de Hoteles segun la Puntuacion de Opiniones'
+                        }
+                    });
+                }
+            </script>
+        </div>
+
+        <!-- Grafica 6 -->
+        <div id="miGrafica6" class="cont-graficas">
+            <script>
+                // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+                let datos6 = JSON.parse('{{ datos_expedia_json6| safe }}');
+
+                // Verificar si 'prop_starrating' está definido y no es nulo
+                if (datos6 && datos6[0] && datos6[0]['srch_length_of_stay']) {
+                    // Obtener los valores y las etiquetas para el gráfico de barras
+                    let duracionEstadia = datos6.map(item => String(item['srch_length_of_stay']));
+                    let numReservas = datos6.length;  // Utilizar la longitud de los datos para representar el número de hoteles
+
+                    // Configuración e inicialización del gráfico con C3.js
+                    var chart = c3.generate({
+                        bindto: '#miGrafica6',
+                        data: {
+                            y: 'Duracion de la estadia',
+                            columns: [
+                                ['Duracion de la Estadia'].concat(duracionEstadia),
+                                ['Numero de Reservas'].concat(numReservas)
+                            ],
+                            type: 'bar'
+                        },
+                        axis: {
+                            x: {
+                                type: 'category',
+                                label: 'Duracion de la Estadia'
+                            },
+                            y: {
+                                label: 'Numero de Reservas'
+                            }
+                        },
+                        title: {
+                            text: 'Distrubucion de la Duracion de la Estadia'
+                        }
+                    });
+                }
+            </script>
+        </div>
+
+        <!-- Grafica 7 -->
+        <div id="miGrafica7" class="cont-graficas">
+            <script>
+                // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+                let datos7 = JSON.parse('{{ datos_expedia_json7| safe }}');
+
+                // Verificar si 'srch_room_count' está definido y no es nulo
+                if (datos7 && datos7[0] && datos7[0]['srch_room_count']) {
+                    // Obtener los valores y las etiquetas para el gráfico de barras
+                    let numHabitaciones = datos7.map(item => String(item['srch_room_count']));
+                    let numReservas7 = datos7.length;  // Utilizar la longitud de los datos para representar el número de hoteles
+
+                    // Configuración e inicialización del gráfico con C3.js
+                    var chart = c3.generate({
+                        bindto: '#miGrafica7',
+                        data: {
+                            y: 'Numero de Habitaciones',
+                            columns: [
+                                ['Numero de Habitaciones'].concat(numHabitaciones),
+                                ['Numero de Reservas'].concat(numReservas7)
+                            ],
+                            type: 'area'
+
+                        },
+                        axis: {
+                            x: {
+                                type: 'category',
+                                label: 'Numero de Habitaciones'
+                            },
+                            y: {
+                                label: 'Numero de Reservas'
+                            }
+                        },
+                        title: {
+                            text: 'Distrubucion del Numero de Habitaciones en Reservaciones'
+                        }
+                    });
+                }
+            </script>
+        </div>
+
+        <!-- Grafica 8 -->
+        <div id="miGrafica8" class="cont-graficas">
+            <script>
+                // Recuperar los datos de Django y convertirlos a formato adecuado para C3.js
+                let datos8 = JSON.parse('{{ datos_expedia_json8| safe }}');
+
+                // Verificar si 'srch_saturday_night_bool' está definido y no es nulo
+                if (datos8 && datos8[0] && datos8[0]['srch_saturday_night_bool']) {
+                    // Obtener los valores y las etiquetas para el gráfico de barras
+                    let estadiaSabado = datos8.map(item => String(item['srch_saturday_night_bool']));
+                    let numReservas8 = datos8.length;  // Utilizar la longitud de los datos para representar el número de hoteles
+
+                    // Configuración e inicialización del gráfico con C3.js
+                    var chart = c3.generate({
+                        bindto: '#miGrafica8',
+                        data: {
+                            y: 'Inclusion de sabado en la Estadia',
+                            columns: [
+                                ['Inclusion de sabado en la Estadia'].concat(estadiaSabado),
+                                ['Numero de Reservas'].concat(numReservas8)
+                            ],
+                            type: 'area'
+
+                        },
+                        axis: {
+                            x: {
+                                type: 'category',
+                                label: 'Inclusion de sabado en la Estadia'
+                            },
+                            y: {
+                                label: 'Numero de Reservas'
+                            }
+                        },
+                        title: {
+                            text: 'Proporcion de Estadia con y sin sabado'
+                        }
+                    });
+                }
+            </script>
+        </div>
+    </main>
+
+</body>
+<!--Custom js-->
+<script src="{% static 'js/usuario.js' %}"></script>
+
+</html>
